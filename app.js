@@ -12,6 +12,7 @@ var textToRange = require('text-to-range').textToRange;
 
 program
 	.version(require('./package.json').version)
+	.name('snip')
 	.usage('[-f fields] [-d delimiter]')
 	.option('-d, --delimiter [chars]', 'Specify the column delimiter', '/[\t\s,]/')
 	.option('-f, --fields [field-list]', 'Specify the fields to output (default is \'*\')', '*')
