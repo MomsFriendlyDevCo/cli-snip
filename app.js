@@ -14,7 +14,7 @@ program
 	.version(require('./package.json').version)
 	.usage('[-f fields] [-d delimiter]')
 	.option('-d, --delimiter [chars]', 'Specify the column delimiter', '/[\t\s,]/')
-	.option('-f, --fields [field-list]', 'Specify the fields to output')
+	.option('-f, --fields [field-list]', 'Specify the fields to output (default is \'*\')', '*')
 	.option('-u, --undefined [string]', 'What to output when a field value cannot be found or is falsy (default is an empty string)', '')
 	.option('-j, --output-delimiter [string]', 'Delimiter to use between output fields (default is a space)', ' ')
 	.option('-v, --verbose', 'Output debugging information')
@@ -45,24 +45,28 @@ if (program.verbose) console.warn('Using split RegExp', program.delimiterRE.toSt
 
 // Parse range into an array of items we will output {{{
 try {
-	var range = textToRange(program.fields);
+	if (program.fields == '*') {
+		if (program.verbose) console.warn('Outputting all fields');
+	} else {
+		var range = textToRange(program.fields);
 
-	program.fieldArray = (range.or || [range])
-		.reduce((t, i) => {
-			if (i.max === Infinity) {
-				if (!program.max) die('When using higher-than ranges (e.g. ">2") `--max [number]` must also be specified');
-				i.max = program.max - 1;
-			}
-			if (i.min === -Infinity) i.min = 1;
+		program.fieldArray = (range.or || [range])
+			.reduce((t, i) => {
+				if (i.max === Infinity) {
+					if (!program.max) die('When using higher-than ranges (e.g. ">2") `--max [number]` must also be specified');
+					i.max = parseInt(program.max);
+				}
+				if (i.min === -Infinity) i.min = 1;
 
-			if (!isFinite(i.min) || !isFinite(i.max)) throw new Error(`Range items must be finite integers. Asked to parse ${i.min} to ${i.max}`);
+				if (!isFinite(i.min) || !isFinite(i.max)) throw new Error(`Range items must be finite integers. Asked to parse ${i.min} to ${i.max}`);
 
-			for (var n = Math.floor(i.min); n < Math.ceil(i.max + 1); n++)
-				t.push(n - 1);
-			return t;
-		}, [])
+				for (var n = Math.floor(i.min); n < Math.ceil(i.max + 1); n++)
+					t.push(n - 1);
+				return t;
+			}, [])
 
-	if (program.verbose) console.warn('Extracting fields', program.fieldArray.join(', '));
+		if (program.verbose) console.warn('Extracting fields', program.fieldArray.join(', '));
+	}
 } catch (e) {
 	die('Invalid --fields specification', e ? '-' + e.toString() : '');
 }
@@ -71,11 +75,16 @@ try {
 // Function to handle line input
 var lineProcess = line => {
 	var lineBits = line.split(program.delimiterRE);
+
 	console.log(
-		program.fieldArray.map(field =>
-			lineBits[field] || program.undefined
+		(
+			program.fields == '*'
+				? lineBits
+				: program.fieldArray.map(field =>
+					lineBits[field] || program.undefined
+				)
 		)
-		.join(program.oututDelimiter)
+		.join(program.outputDelimiter)
 	)
 };
 

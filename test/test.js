@@ -35,10 +35,18 @@ describe('should cut up text correctly', function() {
 	);
 
 	it('should support complex ranges splits', ()=>
-		exec('node app.js -f1-3,1,1..3,=2,<2,>3 --max 5', {
+		exec('node app.js -f1-3,1,1..3,=2,<2,>3 -j, --max 5', {
 			stdin: 'one,two,three,four,five',
 		}).then(res => {
-			expect(res).to.equal('one,two,three,one,one,two,three,two,one,two,three,four');
+			expect(res).to.equal('one,two,three,one,one,two,three,two,one,two,three,four,five');
+		})
+	);
+
+	it('should output all items when no field spec is given', ()=>
+		exec('node app.js -jX', {
+			stdin: 'one,two,three,four,five',
+		}).then(res => {
+			expect(res).to.equal('oneXtwoXthreeXfourXfive');
 		})
 	);
 
