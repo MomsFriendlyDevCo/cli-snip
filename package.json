@@ -1,0 +1,33 @@
+{
+  "name": "@momsfriendlydevco/cli-snip",
+  "version": "0.0.0",
+  "description": "A less irritating version of the GNU \"cut\" utility",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MomsFriendlyDevCo/cli-snip.git"
+  },
+  "keywords": [
+    "cut",
+    "cli"
+  ],
+  "author": "Matt Carter <m@ttcarter.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MomsFriendlyDevCo/cli-snip/issues"
+  },
+  "homepage": "https://github.com/MomsFriendlyDevCo/cli-snip#readme",
+  "dependencies": {
+    "commander": "^4.1.0",
+    "commander-extras": "^1.1.0",
+    "text-to-range": "^1.0.0"
+  },
+  "devDependencies": {
+    "@momsfriendlydevco/exec": "^1.5.0",
+    "chai": "^4.2.0",
+    "mocha": "^7.0.0"
+  }
+}
