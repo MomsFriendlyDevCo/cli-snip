@@ -1,8 +1,11 @@
 {
   "name": "@momsfriendlydevco/cli-snip",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A less irritating version of the GNU \"cut\" utility",
   "main": "app.js",
+  "bin": {
+    "snip": "app.js"
+  },
   "scripts": {
     "test": "mocha"
   },
