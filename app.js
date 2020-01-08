@@ -14,11 +14,13 @@ program
 	.version(require('./package.json').version)
 	.name('snip')
 	.usage('[-f fields] [-d delimiter]')
-	.option('-d, --delimiter [chars]', 'Specify the column delimiter', '/[\t\s,]/')
+	.option('-d, --delimiter [chars]', 'Specify the column delimiter', '/[\\t\\s,]/')
 	.option('-f, --fields [field-list]', 'Specify the fields to output (default is \'*\')', '*')
 	.option('-u, --undefined [string]', 'What to output when a field value cannot be found or is falsy (default is an empty string)', '')
 	.option('-j, --output-delimiter [string]', 'Delimiter to use between output fields (default is a space)', ' ')
-	.option('-v, --verbose', 'Output debugging information')
+	.option('-v, --verbose', 'Output information about the parsed command line options')
+	.option('--debug', 'Show advanced debugging information per-line processed')
+	.option('--trim', 'Trim all input lines (default is enabled, use --no-trim to disable)', true)
 	.option('--max [number]', 'Specify the highest field index to use when using higher-than ranged fields (e.g. ">3")')
 	.note('If delimiter is surrounded by "/" marks its parsed as a RegExp')
 	.note('The default delimiter is any space, tab or comma - \'/[\\s\\t,]/\'')
@@ -75,7 +77,15 @@ try {
 
 // Function to handle line input
 var lineProcess = line => {
+	if (program.trim) line = line.replace(/^\s+/, '').replace(/\s+$/, '');
+
 	var lineBits = line.split(program.delimiterRE);
+
+	if (program.debug) {
+		console.warn('Input line is [', line, ']');
+		console.warn('Line charCodes are [', line.split('').map((x, index) => line.charCodeAt(index)).join(', '), ']');
+		console.warn('Split line becomes [' + lineBits.join('|') + ']');
+	}
 
 	console.log(
 		(

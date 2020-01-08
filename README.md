@@ -7,6 +7,7 @@ A less irritating version of the GNU `cut` utility.
 * Automatically uses a delimiter which cuts via spaces, tabs and commas
 * RegExp compatible delimiters
 * Can support complex field specifications - `* X X..Y X-Y X~Y <X <=X >X >=X`
+* Can trim input lines
 * (Mostly) backwards compatible with the regular `cut` command
 * `--verbose` mode to see what the tool is actually doing
 
@@ -31,7 +32,7 @@ Usage: snip [-f fields] [-d delimiter]
 Options:
   -V, --version                    output the version number
   -d, --delimiter [chars]          Specify the column delimiter (default:
-                                   "/[\ts,]/")
+                                   "/[\\t\\s,]/")
   -f, --fields [field-list]        Specify the fields to output (default is
                                    '*') (default: "*")
   -u, --undefined [string]         What to output when a field value cannot be
@@ -39,7 +40,12 @@ Options:
                                    string) (default: "")
   -j, --output-delimiter [string]  Delimiter to use between output fields
                                    (default is a space) (default: " ")
-  -v, --verbose                    Output debugging information
+  -v, --verbose                    Output information about the parsed command
+                                   line options
+  --debug                          Show advanced debugging information per-line
+                                   processed
+  --trim                           Trim all input lines (default is enabled,
+                                   use --no-trim to disable) (default: true)
   --max [number]                   Specify the highest field index to use when
                                    using higher-than ranged fields (e.g. ">3")
   -h, --help                       output usage information
